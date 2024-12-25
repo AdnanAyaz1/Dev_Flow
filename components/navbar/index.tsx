@@ -5,7 +5,7 @@ import { ModeToggle } from "./Theme";
 
 const Navbar = () => {
   return (
-    <nav className="flex-between p-6 max-sm:p-8 background-light900_dark200 fixed z-50 w-full top-0 gap-5 shadow-light-300 text-dark-100 dark:text-light-900">
+    <nav className="flex-between p-6 max-sm:p-8 background-light900_dark200 fixed z-50 w-full top-0 gap-5 max-sm:shadow-light-300 text-dark-100 dark:text-light-900">
       <Link href={"/"} className="flex items-center gap-1">
         <Image
           src={"/images/site-logo.svg"}
