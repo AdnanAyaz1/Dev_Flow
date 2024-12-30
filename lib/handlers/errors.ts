@@ -38,7 +38,6 @@ const handleError = (error: unknown, responseType: ResponseType = "server") => {
     const validationError = new ValidationError(
       error.flatten().fieldErrors as Record<string, string[]>
     );
-
     return formatResponse(
       responseType,
       validationError.statusCode,
