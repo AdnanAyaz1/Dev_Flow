@@ -33,7 +33,7 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params;
-  
+
   try {
     await dbConnect();
 
@@ -58,11 +58,7 @@ export async function PUT(
     await dbConnect();
 
     const body = await request.json();
-    const validatedData = AccountSchema.partial().safeParse(body);
-
-    if (!validatedData.success)
-      throw new ValidationError(validatedData.error.flatten().fieldErrors);
-
+    const validatedData = AccountSchema.partial().parse(body);
     const updatedAccount = await Account.findByIdAndUpdate(id, validatedData, {
       new: true,
     });
