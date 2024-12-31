@@ -58,9 +58,6 @@ const handleError = (error: unknown, responseType: ResponseType = "server") => {
       message = `THE ID : ${id} is not valid`;
       status = 400; // bad request
     }
-    if (error.message.includes("already exists")) {
-      status = 409; // conflict
-    }
     return formatResponse(responseType, status, message);
   }
 
