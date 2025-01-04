@@ -3,8 +3,6 @@ import HomeFilter from "@/components/filters/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import { Routes } from "@/constants/routes";
-import { api } from "@/lib/api";
-import handleError from "@/lib/handlers/errors";
 import Link from "next/link";
 
 const questions = [
@@ -52,14 +50,6 @@ interface SearchParams {
   searchParams: Promise<{ [key: string]: string }>;
 }
 
-const test = async () => {
-  try {
-    return await api.users.getAll();
-  } catch (error) {
-    return handleError(error);
-  }
-};
-
 export default async function Home({ searchParams }: SearchParams) {
   const { query = "", filter = "" } = await searchParams;
 
@@ -72,9 +62,6 @@ export default async function Home({ searchParams }: SearchParams) {
       : true;
     return matchesQuery && matchesFilter;
   });
-
-  const users = await test();
- 
 
   return (
     <>
@@ -97,7 +84,6 @@ export default async function Home({ searchParams }: SearchParams) {
         />
       </section>
       <HomeFilter />
-
       <div className="mt-10 flex w-full flex-col gap-6">
         {filteredQuestions.map((question) => (
           <QuestionCard key={question._id} question={question} />
