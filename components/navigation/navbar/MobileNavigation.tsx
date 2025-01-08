@@ -18,6 +18,11 @@ const MobileNavigation = async () => {
   const session = await auth();
   const userId = session?.user?.id;
 
+  const handleSignOut = async () => {
+    "use server";
+    await signOut();
+  };
+
   return (
     <Sheet>
       <SheetTrigger asChild>
@@ -41,7 +46,6 @@ const MobileNavigation = async () => {
             height={23}
             alt="Logo"
           />
-
           <p className="h2-bold font-space-grotesk text-dark-100 dark:text-light-900">
             Dev<span className="text-primary-500">Flow</span>
           </p>
@@ -57,12 +61,7 @@ const MobileNavigation = async () => {
           <div className="flex flex-col gap-3">
             {userId ? (
               <SheetClose asChild>
-                <form
-                  action={async () => {
-                    "use server";
-                    await signOut();
-                  }}
-                >
+                <form onSubmit={handleSignOut}>
                   <Button
                     type="submit"
                     className="base-medium w-fit !bg-transparent px-4 py-3"
