@@ -31,6 +31,13 @@ interface SignInWithOAuthParams {
   };
 }
 
+interface AuthCredentials {
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+}
+
 type ActionResponse<T = null> = {
   success: boolean;
   data?: T;

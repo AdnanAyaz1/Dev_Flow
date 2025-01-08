@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import { ZodError } from "zod";
 
 import { RequestError, ValidationError } from "../http-errors";
-import logger from "../logger";
-import { stat } from "fs";
 
 export type ResponseType = "api" | "server";
 
@@ -49,14 +47,18 @@ const handleError = (error: unknown, responseType: ResponseType = "server") => {
   }
 
   if (error instanceof Error) {
-    logger.error(error);
     let message = error.message || "An unexpected error occurred";
     let status = 500;
     if (error?.name === "CastError") {
       let id = error.message.split(" ")[6];
       id = id.replace(/[^a-zA-Z0-9]/g, "");
       message = `THE ID : ${id} is not valid`;
-      status = 400; // bad request
+      status = 409; // bad request Conflict
+    }
+    if ((error as any).code === 11000) {
+      const duplicateKey = Object.keys((error as any).keyValue).join(", ");
+      message = `${duplicateKey} already exists. Please use a different value.`;
+      status = 409; // Conflict
     }
     return formatResponse(responseType, status, message);
   }
