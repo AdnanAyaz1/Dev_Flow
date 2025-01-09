@@ -44,6 +44,14 @@ interface CreateQuestionParams {
   tags: string[];
 }
 
+interface EditQuestionParams extends CreateQuestionParams {
+  questionId: string;
+}
+
+interface GetQuestionParams {
+  questionId: string;
+}
+
 type ActionResponse<T = null> = {
   success: boolean;
   data?: T;
@@ -53,6 +61,11 @@ type ActionResponse<T = null> = {
   };
   status?: number;
 };
+
+interface RouteParams {
+  params: Promise<Record<string, string>>;
+  searchParams: Promise<Record<string, string>>;
+}
 
 type SuccessResponse<T = null> = ActionResponse<T> & { success: true };
 type ErrorResponse = ActionResponse<undefined> & { success: false };
