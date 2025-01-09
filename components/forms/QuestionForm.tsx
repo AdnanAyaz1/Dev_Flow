@@ -22,7 +22,7 @@ import {
 import { Input } from "../ui/input";
 import { AskQuestionSchema } from "@/lib/validation";
 import { toast } from "@/hooks/use-toast";
-import { createQuestion } from "@/lib/actions/question.action";
+import { createQuestion, editQuestion } from "@/lib/actions/question.action";
 import { useRouter } from "next/navigation";
 import { Routes } from "@/constants/routes";
 
@@ -30,7 +30,12 @@ const Editor = dynamic(() => import("@/components/editor/page"), {
   ssr: false,
 });
 
-const QuestionForm = () => {
+interface Params {
+  question?: Question;
+  isEdit?: boolean;
+}
+
+const QuestionForm = ({ question, isEdit = false }: Params) => {
   const router = useRouter();
   const editorRef = useRef<MDXEditorMethods>(null);
   const [isPending, startTransition] = useTransition();
@@ -38,9 +43,9 @@ const QuestionForm = () => {
   const form = useForm<z.infer<typeof AskQuestionSchema>>({
     resolver: zodResolver(AskQuestionSchema),
     defaultValues: {
-      title: "",
-      content: "",
-      tags: [],
+      title: question?.title || "",
+      content: question?.content || "",
+      tags: question?.tags.map((tag) => tag.name) || [],
     },
   });
 
@@ -92,11 +97,31 @@ const QuestionForm = () => {
   };
 
   const handleCreateQuestion = (data: z.infer<typeof AskQuestionSchema>) => {
-    startTransition(() => {
-      createQuestionAsync();
-    });
-
     const createQuestionAsync = async () => {
+      if (isEdit && question) {
+        const result = await editQuestion({
+          questionId: question?._id,
+          ...data,
+        });
+
+        if (result.success) {
+          toast({
+            title: "Success",
+            description: "Question updated successfully",
+            variant: "success",
+          });
+
+          if (result.data) router.push(Routes.QUESTION(result.data._id));
+        } else {
+          toast({
+            title: `Error ${result.status}`,
+            description: result.error?.message || "Something went wrong",
+            variant: "destructive",
+          });
+        }
+
+        return;
+      }
       const result = await createQuestion(data);
       if (result.success) {
         toast({
@@ -114,6 +139,9 @@ const QuestionForm = () => {
         });
       }
     };
+    startTransition(() => {
+      createQuestionAsync();
+    });
   };
 
   return (
