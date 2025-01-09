@@ -38,6 +38,12 @@ interface AuthCredentials {
   password: string;
 }
 
+interface CreateQuestionParams {
+  title: string;
+  content: string;
+  tags: string[];
+}
+
 type ActionResponse<T = null> = {
   success: boolean;
   data?: T;
